@@ -1,0 +1,35 @@
+Artificial Intelligence Society Information
+
+About Us:
+The Artificial Intelligence Society is a student-run organization dedicated to exploring and promoting the field of artificial intelligence. We aim to foster a community of AI enthusiasts, from beginners to experts, and provide opportunities for learning, collaboration, and innovation.
+
+Our Goals:
+1. Educate members about AI concepts, technologies, and applications
+2. Organize workshops, seminars, and hands-on projects
+3. Facilitate networking opportunities with industry professionals and academics
+4. Promote ethical considerations in AI development and implementation
+
+Regular Activities:
+1. Weekly meetings to discuss latest AI trends and research
+2. Monthly workshops on various AI tools and frameworks
+3. Quarterly hackathons focused on AI-driven solutions
+4. Annual AI conference featuring guest speakers from academia and industry
+
+Membership Benefits:
+1. Access to our extensive AI resource library
+2. Participation in exclusive AI projects and competitions
+3. Networking opportunities with fellow AI enthusiasts and professionals
+4. Mentorship programs for beginners in AI
+
+Upcoming Events:
+[List your upcoming events here]
+
+How to Join:
+Interested students can join our society by [provide joining instructions]
+
+Contact Information:
+Email: [society email]
+Website: [society website]
+Social Media: [links to social media profiles]
+
+We welcome students from all academic backgrounds who are interested in AI. Whether you're a complete beginner or an experienced developer, there's a place for you in our society!
