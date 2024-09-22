@@ -1,48 +1,48 @@
-name: Run Email Replier
+# name: Run Email Replier
 
-on:
-  schedule:
-    - cron: '*/15 * * * *'  # Run every 15 minutes
-  workflow_dispatch:  # Allow manual triggering
+# on:
+#   schedule:
+#     - cron: '*/15 * * * *'  # Run every 15 minutes
+#   workflow_dispatch:  # Allow manual triggering
 
-jobs:
-  run-email-replier:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
+# jobs:
+#   run-email-replier:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v3
     
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
+#     - name: Set up Python
+#       uses: actions/setup-python@v4
+#       with:
+#         python-version: '3.9'
     
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+#     - name: Install dependencies
+#       run: |
+#         python -m pip install --upgrade pip
+#         pip install -r requirements.txt
     
-    - name: Decode Google credentials
-      env:
-        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-      run: echo $GOOGLE_CREDENTIALS | base64 -d > credentials.json
+#     - name: Decode Google credentials
+#       env:
+#         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+#       run: echo $GOOGLE_CREDENTIALS | base64 -d > credentials.json
     
-    - name: Update config.yaml
-      env:
-        EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-      run: |
-        sed -i 's/email_address: "EMAIL_ADDRESS"/email_address: "'$EMAIL_ADDRESS'"/' config.yaml
-        sed -i 's/google_api_key: "GOOGLE_API_KEY"/google_api_key: "'$GOOGLE_API_KEY'"/' config.yaml
+#     - name: Update config.yaml
+#       env:
+#         EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+#         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+#       run: |
+#         sed -i 's/email_address: "EMAIL_ADDRESS"/email_address: "'$EMAIL_ADDRESS'"/' config.yaml
+#         sed -i 's/google_api_key: "GOOGLE_API_KEY"/google_api_key: "'$GOOGLE_API_KEY'"/' config.yaml
     
-    - name: Run Email Replier
-      run: python email_replier.py
-      env:
-        EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+#     - name: Run Email Replier
+#       run: python email_replier.py
+#       env:
+#         EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+#         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
     
-    - name: Upload logs
-      uses: actions/upload-artifact@v4
-      with:
-        name: email-replier-logs
-        path: email_replier.log
-        retention-days: 5
+#     - name: Upload logs
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: email-replier-logs
+#         path: email_replier.log
+#         retention-days: 5
