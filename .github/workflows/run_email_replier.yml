@@ -21,21 +21,23 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
+    - name: Decode Google credentials
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      run: echo $GOOGLE_CREDENTIALS | base64 -d > credentials.json
+    
     - name: Update config.yaml
       env:
         EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       run: |
-        sed -i 's/email_address: "your_email@example.com"/email_address: "'$EMAIL_ADDRESS'"/' config.yaml
-        sed -i 's/email_password: "your_email_password"/email_password: "'$EMAIL_PASSWORD'"/' config.yaml
-        sed -i 's/google_api_key: "your_google_api_key"/google_api_key: "'$GOOGLE_API_KEY'"/' config.yaml
+        sed -i 's/email_address: "EMAIL_ADDRESS"/email_address: "'$EMAIL_ADDRESS'"/' config.yaml
+        sed -i 's/google_api_key: "GOOGLE_API_KEY"/google_api_key: "'$GOOGLE_API_KEY'"/' config.yaml
     
     - name: Run Email Replier
       run: python email_replier.py
       env:
         EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
     
     - name: Upload logs

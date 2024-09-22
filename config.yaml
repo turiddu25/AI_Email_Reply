@@ -1,8 +1,8 @@
 # Email Configuration
 email_address: "EMAIL_ADDRESS"  # Will be replaced by GitHub Secret
-email_password: "EMAIL_PASSWORD"  # Will be replaced by GitHub Secret
-imap_server: "imap.example.com"
-smtp_server: "smtp.example.com"
+
+# Google API Configuration
+client_secret_file: "credentials.json"  # Path to the client secret file downloaded from Google Cloud Console
 
 # Google Generative AI Configuration
 google_api_key: "GOOGLE_API_KEY"  # Will be replaced by GitHub Secret

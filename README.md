@@ -1,11 +1,11 @@
 # AI Email Reply Bot for Artificial Intelligence Society
 
-This Python program automatically detects incoming emails, drafts AI-generated replies, and saves them as drafts for manual review and sending. It's designed to run continuously and can be customized for the Artificial Intelligence Society's needs.
+This Python program automatically detects incoming emails, drafts AI-generated replies, and saves them as drafts for manual review and sending. It's designed to run continuously using GitHub Actions and can be customized for the Artificial Intelligence Society's needs.
 
 ## Features
 
-- Automatic email checking using IMAP protocol
-- AI-powered response generation using Google's Gemini 1.5 Flash
+- Automatic email checking using Gmail API
+- AI-powered response generation using Google's Generative AI
 - Customizable AI prompts with example replies
 - Separate file for easily editable society information
 - Creation of draft replies instead of automatic sending
@@ -15,40 +15,62 @@ This Python program automatically detects incoming emails, drafts AI-generated r
 
 ## Setup
 
-1. Clone this repository to your local machine or server.
+1. Clone this repository to your local machine or fork it to your GitHub account.
 
-2. Install the required Python packages:
+2. Set up a Google Cloud Project and enable the Gmail API:
+   - Go to the [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or select an existing one
+   - Enable the Gmail API for your project
+   - Create OAuth 2.0 credentials (Desktop app) and download the client configuration as `credentials.json`
+
+3. Install the required Python packages locally for testing:
    ```
    pip install -r requirements.txt
    ```
 
-3. Configure the `config.yaml` file:
-   - Enter your email credentials (address, password, IMAP server)
-   - Add your Google API key for Gemini 1.5 Flash
-   - Customize the AI prompt and example reply as needed
+4. Configure the `config.yaml` file:
+   - Update the `email_address` field with your Gmail address
+   - Customize the `ai_prompt` as needed
    - Adjust the `check_frequency` and `max_emails_per_cycle` as desired
 
-4. Edit the `society_info.txt` file:
+5. Edit the `society_info.txt` file:
    - Add detailed information about your Artificial Intelligence Society
    - Include goals, activities, membership benefits, and contact information
 
-5. Run the program locally:
+6. Set up GitHub Secrets:
+   - In your GitHub repository, go to Settings > Secrets and variables > Actions
+   - Add the following secrets:
+     - `EMAIL_ADDRESS`: Your Gmail address
+     - `GOOGLE_API_KEY`: Your Google API key for the Generative AI model
+     - `GOOGLE_CREDENTIALS`: The contents of your `credentials.json` file, base64 encoded
+
+7. Push your changes to GitHub:
+   ```
+   git add .
+   git commit -m "Set up AI Email Reply Bot"
+   git push
+   ```
+
+## Running the Bot
+
+The bot is configured to run automatically every 15 minutes using GitHub Actions. You can also trigger it manually:
+
+1. Go to your GitHub repository
+2. Click on the "Actions" tab
+3. Select the "Run Email Replier" workflow
+4. Click "Run workflow"
+
+## Local Testing
+
+To test the bot locally:
+
+1. Ensure you have the `credentials.json` file in your project directory
+2. Run the script:
    ```
    python email_replier.py
    ```
 
-## Testing
-
-To test the AI response generation without sending an actual email, you can use the built-in test function:
-
-1. Make sure you have completed the setup steps above, including adding your Google API key to the `config.yaml` file.
-
-2. Run the test command:
-   ```
-   python email_replier.py --test
-   ```
-
-3. The program will generate a response to a sample email inquiry and display it in the console. This allows you to verify that the AI is generating appropriate responses based on your configuration and society information.
+3. The first time you run the script, it will prompt you to authorize access to your Gmail account. Follow the instructions in the console.
 
 ## Customization
 
@@ -67,52 +89,19 @@ You can customize the AI's behavior by modifying the following files:
 
 The program creates draft replies instead of sending them automatically. To review and send the drafts:
 
-1. Log into your email account
+1. Log into your Gmail account
 2. Go to the Drafts folder
 3. Review each draft, make any necessary edits
 4. Send the emails manually when you're satisfied with the content
 
 ## Logging
 
-The program logs its activities and any errors to `email_replier.log`. Check this file for debugging information if you encounter any issues.
+The program logs its activities and any errors to `email_replier.log`. You can view these logs in the GitHub Actions run details.
 
 ## Security Note
 
-Please ensure that your `config.yaml` file is kept secure and not shared publicly, as it contains sensitive information like email passwords and API keys. When using GitHub Actions, store sensitive information as GitHub Secrets.
-
-## Continuous Running on GitHub Servers
-
-To run this program continuously on GitHub servers, we use GitHub Actions. This allows the script to run at regular intervals without the need for a dedicated server. Here's how it's set up:
-
-1. The GitHub Actions workflow is defined in `.github/workflows/run_email_replier.yml`.
-2. The workflow is scheduled to run every 15 minutes (you can adjust this as needed).
-3. Sensitive information (email credentials, API keys) is stored as GitHub Secrets and passed to the script securely.
-4. The script runs for a limited time during each execution to avoid exceeding GitHub Actions time limits.
-
-To set up continuous running on GitHub:
-
-1. Fork or push this repository to your GitHub account.
-2. Go to your repository's Settings > Secrets and add the following secrets:
-   - EMAIL_ADDRESS
-   - EMAIL_PASSWORD
-   - GOOGLE_API_KEY
-3. Update the `config.yaml` file to use these secrets (the workflow will handle this).
-4. Commit and push your changes.
-5. GitHub Actions will now run the script automatically according to the schedule.
-
-You can monitor the execution in the "Actions" tab of your GitHub repository.
+Ensure that your `config.yaml` file and `credentials.json` are kept secure and not shared publicly, as they contain sensitive information. The GitHub Secrets feature is used to securely store and use these credentials in the GitHub Actions workflow.
 
 ## Disclaimer
 
 This program interacts with email accounts and uses AI to generate responses. Please use it responsibly and in compliance with all relevant laws and regulations. Always review the AI-generated drafts before sending to ensure they meet your standards and accurately represent your society.
-
-## Google API Key Setup
-
-To use this program with Gemini 1.5 Flash, you need to set up a Google API key:
-
-1. Go to the [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Sign in with your Google account
-3. Click on "Create API key" and copy the generated key
-4. Add the API key as a GitHub Secret named GOOGLE_API_KEY
-
-Make sure to keep your API key confidential and never share it publicly.
