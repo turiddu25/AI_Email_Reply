@@ -11,6 +11,7 @@ This Python program automatically detects incoming emails, drafts AI-generated r
 - Creation of draft replies instead of automatic sending
 - Configurable email checking frequency and processing limits
 - Error handling and logging for improved reliability
+- Continuous running capability using GitHub Actions
 
 ## Setup
 
@@ -31,10 +32,23 @@ This Python program automatically detects incoming emails, drafts AI-generated r
    - Add detailed information about your Artificial Intelligence Society
    - Include goals, activities, membership benefits, and contact information
 
-5. Run the program:
+5. Run the program locally:
    ```
    python email_replier.py
    ```
+
+## Testing
+
+To test the AI response generation without sending an actual email, you can use the built-in test function:
+
+1. Make sure you have completed the setup steps above, including adding your Google API key to the `config.yaml` file.
+
+2. Run the test command:
+   ```
+   python email_replier.py --test
+   ```
+
+3. The program will generate a response to a sample email inquiry and display it in the console. This allows you to verify that the AI is generating appropriate responses based on your configuration and society information.
 
 ## Customization
 
@@ -64,11 +78,29 @@ The program logs its activities and any errors to `email_replier.log`. Check thi
 
 ## Security Note
 
-Please ensure that your `config.yaml` file is kept secure and not shared publicly, as it contains sensitive information like email passwords and API keys.
+Please ensure that your `config.yaml` file is kept secure and not shared publicly, as it contains sensitive information like email passwords and API keys. When using GitHub Actions, store sensitive information as GitHub Secrets.
 
-## Continuous Running
+## Continuous Running on GitHub Servers
 
-To run this program continuously, you can use a process manager like `systemd` on Linux or create a Windows Service. Alternatively, you can set up a cron job or scheduled task to run the script at regular intervals.
+To run this program continuously on GitHub servers, we use GitHub Actions. This allows the script to run at regular intervals without the need for a dedicated server. Here's how it's set up:
+
+1. The GitHub Actions workflow is defined in `.github/workflows/run_email_replier.yml`.
+2. The workflow is scheduled to run every 15 minutes (you can adjust this as needed).
+3. Sensitive information (email credentials, API keys) is stored as GitHub Secrets and passed to the script securely.
+4. The script runs for a limited time during each execution to avoid exceeding GitHub Actions time limits.
+
+To set up continuous running on GitHub:
+
+1. Fork or push this repository to your GitHub account.
+2. Go to your repository's Settings > Secrets and add the following secrets:
+   - EMAIL_ADDRESS
+   - EMAIL_PASSWORD
+   - GOOGLE_API_KEY
+3. Update the `config.yaml` file to use these secrets (the workflow will handle this).
+4. Commit and push your changes.
+5. GitHub Actions will now run the script automatically according to the schedule.
+
+You can monitor the execution in the "Actions" tab of your GitHub repository.
 
 ## Disclaimer
 
@@ -81,6 +113,6 @@ To use this program with Gemini 1.5 Flash, you need to set up a Google API key:
 1. Go to the [Google AI Studio](https://makersuite.google.com/app/apikey)
 2. Sign in with your Google account
 3. Click on "Create API key" and copy the generated key
-4. Paste the API key in the `config.yaml` file under `google_api_key`
+4. Add the API key as a GitHub Secret named GOOGLE_API_KEY
 
 Make sure to keep your API key confidential and never share it publicly.

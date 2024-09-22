@@ -1,0 +1,45 @@
+name: Run Email Replier
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # Run every 15 minutes
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  run-email-replier:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Update config.yaml
+      env:
+        EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      run: |
+        sed -i 's/email_address: "your_email@example.com"/email_address: "'$EMAIL_ADDRESS'"/' config.yaml
+        sed -i 's/email_password: "your_email_password"/email_password: "'$EMAIL_PASSWORD'"/' config.yaml
+        sed -i 's/google_api_key: "your_google_api_key"/google_api_key: "'$GOOGLE_API_KEY'"/' config.yaml
+    
+    - name: Run Email Replier
+      run: python email_replier.py
+      env:
+        EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+    
+    - name: Upload logs
+      uses: actions/upload-artifact@v2
+      with:
+        name: email-replier-logs
+        path: email_replier.log

@@ -6,6 +6,7 @@ import google.generativeai as genai
 import smtplib
 import logging
 import os
+import sys
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -16,7 +17,14 @@ logging.basicConfig(filename='email_replier.log', level=logging.INFO,
 def load_config():
     try:
         with open('config.yaml', 'r') as file:
-            return yaml.safe_load(file)
+            config = yaml.safe_load(file)
+        
+        # Override config with environment variables if available
+        config['email_address'] = os.environ.get('EMAIL_ADDRESS', config['email_address'])
+        config['email_password'] = os.environ.get('EMAIL_PASSWORD', config['email_password'])
+        config['google_api_key'] = os.environ.get('GOOGLE_API_KEY', config['google_api_key'])
+        
+        return config
     except Exception as e:
         logging.error(f"Error loading config: {e}")
         raise
@@ -102,7 +110,36 @@ def mark_as_processed(imap_server, email_id):
     except Exception as e:
         logging.error(f"Error marking email as processed: {e}")
 
+def test_ai_response():
+    config = load_config()
+    society_info = load_society_info(config['society_info_file'])
+    
+    # Configure Google Generative AI
+    genai.configure(api_key=config['google_api_key'])
+    
+    test_email_content = {
+        'body': "Hello, I'm interested in joining the AI Society. Can you tell me more about your upcoming events and how I can become a member?",
+        'subject': "Inquiry about AI Society Membership",
+        'from': "test@example.com"
+    }
+    
+    ai_response = generate_ai_response(config['ai_prompt'], test_email_content['body'], society_info)
+    
+    if ai_response:
+        print("Test AI Response:")
+        print(f"Subject: Re: {test_email_content['subject']}")
+        print(f"To: {test_email_content['from']}")
+        print(f"Body:\n{ai_response}")
+        return True
+    else:
+        print("Failed to generate AI response.")
+        return False
+
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "--test":
+        success = test_ai_response()
+        sys.exit(0 if success else 1)
+    
     config = load_config()
     society_info = load_society_info(config['society_info_file'])
     
@@ -111,7 +148,10 @@ if __name__ == "__main__":
     
     imap_server = imaplib.IMAP4_SSL(config['imap_server'])
     
-    while True:
+    start_time = time.time()
+    max_runtime = 540  # 9 minutes (to stay within GitHub Actions 10-minute limit)
+    
+    while time.time() - start_time < max_runtime:
         try:
             new_emails = check_for_new_emails(imap_server, config['email_address'], config['email_password'])
             
@@ -134,3 +174,6 @@ if __name__ == "__main__":
         except Exception as e:
             logging.error(f"An error occurred in the main loop: {e}")
             time.sleep(60)  # Wait a minute before trying again
+    
+    logging.info("Script reached maximum runtime, shutting down.")
+    imap_server.logout()
